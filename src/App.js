@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchData, dataSelector } from "./slices/dataSlice";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const dispatch = useDispatch();
+  const { data, loading } = useSelector(dataSelector);
+  console.log(data);
+
+  useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
+
+  const renderData = () => {
+    if (loading) {
+      return <p>Loading data.....</p>;
+    }
+
+    return data.states.map((text) => {
+      <table>
+        <tr>
+          <th>State</th>
+          <th>Id</th>
+          <th>Confirmed cases</th>
+          <th>Cases on admission</th>
+          <th>discharged</th>
+          <th>death</th>
+        </tr>
+        <tr key={text.id}>
+          <td>{text.state}</td>
+          <td>{text._id}</td>
+          <td>{text.confirmedCases}</td>
+          <td>{text.casesOnAdmission}</td>
+          <td>{text.discharged}</td>
+          <td>{text.death}</td>
+        </tr>
+      </table>;
+    });
+  };
+
+  return <div>{renderData()}</div>;
 }
 
 export default App;
