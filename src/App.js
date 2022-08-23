@@ -6,7 +6,6 @@ import { fetchData, dataSelector } from "./slices/dataSlice";
 function App() {
   const dispatch = useDispatch();
   const { data, loading } = useSelector(dataSelector);
-  console.log(data);
 
   useEffect(() => {
     dispatch(fetchData());
@@ -17,26 +16,36 @@ function App() {
       return <p>Loading data.....</p>;
     }
 
-    return data.states.map((text) => {
+    if (!data) {
+      return <p>no data</p>;
+    }
+
+    return (
       <table>
-        <tr>
-          <th>State</th>
-          <th>Id</th>
-          <th>Confirmed cases</th>
-          <th>Cases on admission</th>
-          <th>discharged</th>
-          <th>death</th>
-        </tr>
-        <tr key={text.id}>
-          <td>{text.state}</td>
-          <td>{text._id}</td>
-          <td>{text.confirmedCases}</td>
-          <td>{text.casesOnAdmission}</td>
-          <td>{text.discharged}</td>
-          <td>{text.death}</td>
-        </tr>
-      </table>;
-    });
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Id</th>
+            <th>Confirmed cases</th>
+            <th>Cases on admission</th>
+            <th>discharged</th>
+            <th>death</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.states.map((text) => (
+            <tr key={text._id}>
+              <td>{text.state}</td>
+              <td>{text._id}</td>
+              <td>{text.confirmedCases}</td>
+              <td>{text.casesOnAdmission}</td>
+              <td>{text.discharged}</td>
+              <td>{text.death}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   };
 
   return <div>{renderData()}</div>;

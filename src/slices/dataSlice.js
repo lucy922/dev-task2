@@ -2,36 +2,36 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  data: [],
+  data: null,
 };
 
 const dataSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
-    getData: (state) => {
+    setLoading: (state) => {
       state.loading = true;
     },
-    getDataSuccess: (state, { payload }) => {
+    setData: (state, { payload }) => {
       state.data = payload;
       state.loading = false;
     },
   },
 });
 
-export const { getData, getDataSuccess } = dataSlice.actions;
+export const { setLoading, setData } = dataSlice.actions;
 
 export const dataSelector = (state) => state.data;
 export default dataSlice.reducer;
 
 export function fetchData() {
   return async (dispatch) => {
-    dispatch(getData());
+    dispatch(setLoading());
 
     try {
       const response = await fetch("https://covidnigeria.herokuapp.com/api");
-      const { data } = await response.json();
-      dispatch(getDataSuccess(data));
+      const data = await response.json();
+      dispatch(setData(data.data));
     } catch (error) {
       throw error;
     }
